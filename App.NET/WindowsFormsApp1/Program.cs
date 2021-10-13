@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Configuration;
+using WindowsFormsApp1.Classes;
 
 namespace WindowsFormsApp1
 {
@@ -17,9 +18,9 @@ namespace WindowsFormsApp1
 		[Obsolete]
 		static void Main()
 		{
-			SqlConnection conn = new SqlConnection();
-			conn.ConnectionString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
-			
+			var connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+			var tables = SqlHelper.GetTables("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", connString);
+
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
