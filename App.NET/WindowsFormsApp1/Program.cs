@@ -18,10 +18,6 @@ namespace WindowsFormsApp1
 		[Obsolete]
 		static void Main()
 		{
-			var connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
-			var tables = SqlHelper.GetTables("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", connString);
-
-
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new Form1());

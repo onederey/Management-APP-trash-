@@ -46,12 +46,13 @@ namespace WindowsFormsApp1.Classes
 				connection.Open();
 				SqlDataAdapter da = new SqlDataAdapter();
 				SqlCommand cmd = connection.CreateCommand();
-				cmd.CommandText = $"SELECT * FROM {name}";
-				DataTable table = new DataTable();
-				table.Load(cmd.ExecuteReader());
-				ds.Tables.Add(table);
+				cmd.CommandText = SqlScripts.SelectScript + "[" + name + "]";
+				da.SelectCommand = cmd;
+				da.Fill(ds);
 
-				//da.Fill(ds);
+				//DataTable table = new DataTable();
+				//table.Load(cmd.ExecuteReader());
+				//ds.Tables.Add(table);
 			}
 
 			return ds;
