@@ -110,6 +110,7 @@ namespace WindowsFormsApp1
 
 			dataGridView1.DataSource = null;
 			dataGridView1.AutoGenerateColumns = true;
+			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 			dataGridView1.DataSource = dataset;
 			dataGridView1.DataMember = dataset.Tables[0].TableName;
 		}
