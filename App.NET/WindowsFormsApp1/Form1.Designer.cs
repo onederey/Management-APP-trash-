@@ -30,14 +30,16 @@
 		{
 			this.treeView1 = new System.Windows.Forms.TreeView();
 			this.dataGridView1 = new System.Windows.Forms.DataGridView();
+			this.Save = new System.Windows.Forms.Button();
+			this.comboBox1 = new System.Windows.Forms.ComboBox();
+			this.textBox1 = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// treeView1
 			// 
-			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
 			this.treeView1.Location = new System.Drawing.Point(0, 0);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(236, 565);
@@ -50,21 +52,51 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Location = new System.Drawing.Point(235, 0);
+			this.dataGridView1.Location = new System.Drawing.Point(235, 34);
 			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(775, 565);
+			this.dataGridView1.Size = new System.Drawing.Size(775, 531);
 			this.dataGridView1.TabIndex = 1;
 			this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
 			this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
 			this.dataGridView1.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.dataGridView1_RowsAdded);
 			this.dataGridView1.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.dataGridView1_RowsRemoved);
 			// 
+			// Save
+			// 
+			this.Save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.Save.Location = new System.Drawing.Point(864, 7);
+			this.Save.Name = "Save";
+			this.Save.Size = new System.Drawing.Size(134, 21);
+			this.Save.TabIndex = 2;
+			this.Save.Text = "Save";
+			this.Save.UseVisualStyleBackColor = true;
+			this.Save.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// comboBox1
+			// 
+			this.comboBox1.FormattingEnabled = true;
+			this.comboBox1.Location = new System.Drawing.Point(242, 7);
+			this.comboBox1.Name = "comboBox1";
+			this.comboBox1.Size = new System.Drawing.Size(121, 21);
+			this.comboBox1.TabIndex = 3;
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(369, 8);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(187, 20);
+			this.textBox1.TabIndex = 4;
+			this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.BackColor = System.Drawing.Color.MediumAquamarine;
+			this.BackColor = System.Drawing.SystemColors.Control;
 			this.ClientSize = new System.Drawing.Size(1010, 565);
+			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.comboBox1);
+			this.Controls.Add(this.Save);
 			this.Controls.Add(this.dataGridView1);
 			this.Controls.Add(this.treeView1);
 			this.MinimumSize = new System.Drawing.Size(1026, 604);
@@ -72,6 +104,7 @@
 			this.Text = "App.NET";
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -79,6 +112,9 @@
 
 		private System.Windows.Forms.TreeView treeView1;
 		private System.Windows.Forms.DataGridView dataGridView1;
+		private System.Windows.Forms.Button Save;
+		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.TextBox textBox1;
 	}
 }
 

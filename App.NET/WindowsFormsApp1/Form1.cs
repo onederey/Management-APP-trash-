@@ -14,9 +14,11 @@ namespace WindowsFormsApp1
 {
 	public partial class Form1 : Form
 	{
+		private App app = new App();
+
 		DataSet dataset = new DataSet();
-		SqlDataAdapter dataAdapter = new SqlDataAdapter();
 		string currentTable;
+		bool isLoaded = false;
 
 		public Form1()
 		{
@@ -84,9 +86,22 @@ namespace WindowsFormsApp1
 			Console.Write(e.Node.Parent);
 			if (e.Node.Parent?.ToString() == "TreeNode: Tables")
 			{
+				isLoaded = false;
 				currentTable = e.Node.Text;
 				InitializeDataSet(e.Node.Text);
 			}
+			isLoaded = true;
+			InitializeCombo();
+		}
+
+		private void InitializeCombo()
+		{
+			var ds = (DataSet)dataGridView1?.DataSource;
+			string[] columnNames = ds?.Tables[0]?.Columns.Cast<DataColumn>()
+								 .Select(x => x.ColumnName)
+								 .ToArray();
+			if(columnNames != null)
+				comboBox1.Items.AddRange(columnNames);
 		}
 
 		private void InitializeDataSet(string tableName)
@@ -101,7 +116,7 @@ namespace WindowsFormsApp1
 
 		private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
 		{
-			SaveAndCommitToDb();
+
 		}
 
 		private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
@@ -111,30 +126,54 @@ namespace WindowsFormsApp1
 
 		private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
 		{
+			if(isLoaded)
+			{
 
+			}
 		}
 
 		private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
+			if (isLoaded)
+			{
 
+			}
 		}
 
-		private void SaveAndCommitToDb()
+		private void button1_Click(object sender, EventArgs e)
 		{
-			using (SqlConnection conn = new SqlConnection(SqlHelper.connString))
+			if (dataGridView1?.DataSource != null)
 			{
-				conn.Open();
+				DataSet ds = (DataSet)dataGridView1.DataSource;
+				if (ds.HasChanges())
+				{
+					try
+					{
+						SqlHelper.SaveAndCommitToDb((DataSet)dataGridView1.DataSource, currentTable);
+					}
+					catch (SqlException ex)
+					{
+						app.LogError(ex);
+					}
+				}
+			}
+		}
 
-				DataSet newDataSet = new DataSet();
-				SqlDataAdapter newDataAdapter = new SqlDataAdapter();
-				newDataAdapter.SelectCommand = new SqlCommand(SqlScripts.SelectScript + $"[{currentTable}]", conn);
-				SqlCommandBuilder cb = new SqlCommandBuilder(newDataAdapter);
-				newDataAdapter.Fill(newDataSet);
-
-				newDataAdapter.UpdateCommand = cb.GetUpdateCommand();
-				newDataAdapter.Update(dataset);
-				
-				conn.Close();
+		//search dont work
+		private void textBox1_TextChanged(object sender, EventArgs e)
+		{
+			try
+			{
+				if (dataGridView1?.DataSource != null)
+				{
+					var tempTable = (DataSet)dataGridView1.DataSource;
+					tempTable.Tables[0].DefaultView.RowFilter = string.Format("" + comboBox1.Text + " like '%{0}%'", textBox1.Text.Trim().Replace("'", "''"));
+					dataGridView1.DataSource = tempTable;
+				}
+			}
+			catch(Exception ex)
+			{
+				app.LogError(ex);
 			}
 		}
 	}

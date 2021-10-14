@@ -49,13 +49,28 @@ namespace WindowsFormsApp1.Classes
 				cmd.CommandText = SqlScripts.SelectScript + "[" + name + "]";
 				da.SelectCommand = cmd;
 				da.Fill(ds);
-
-				//DataTable table = new DataTable();
-				//table.Load(cmd.ExecuteReader());
-				//ds.Tables.Add(table);
 			}
 
 			return ds;
+		}
+
+		public static void SaveAndCommitToDb(DataSet dataset, string currentTable)
+		{
+			using (SqlConnection conn = new SqlConnection(SqlHelper.connString))
+			{
+				conn.Open();
+
+				DataSet newDataSet = new DataSet();
+				SqlDataAdapter newDataAdapter = new SqlDataAdapter();
+				newDataAdapter.SelectCommand = new SqlCommand(SqlScripts.SelectScript + $"[{currentTable}]", conn);
+				SqlCommandBuilder cb = new SqlCommandBuilder(newDataAdapter);
+				newDataAdapter.Fill(newDataSet);
+
+				newDataAdapter.UpdateCommand = cb.GetUpdateCommand();
+				newDataAdapter.Update(dataset, dataset.Tables[0].TableName);
+				
+				conn.Close();
+			}
 		}
 	}
 }
