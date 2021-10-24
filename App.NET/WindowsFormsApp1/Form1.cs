@@ -17,6 +17,7 @@ namespace WindowsFormsApp1
 		private App app = new App();
 
 		DataSet dataset = new DataSet();
+		DataSet newDataSet = new DataSet();
 		string currentTable;
 		bool isLoaded = false;
 
@@ -56,7 +57,7 @@ namespace WindowsFormsApp1
 			node.Tag = 0;
 
 			//TODO: Going with the fast option so we'll create a dummy node
-			foreach(var item in items)
+			foreach (var item in items)
 			{
 				var child = new TreeNode() { Text = item };
 				node.Nodes.Add(child);
@@ -100,8 +101,11 @@ namespace WindowsFormsApp1
 			string[] columnNames = ds?.Tables[0]?.Columns.Cast<DataColumn>()
 								 .Select(x => x.ColumnName)
 								 .ToArray();
-			if(columnNames != null)
+			if (columnNames != null)
+			{
+				comboBox1.Items.Clear();
 				comboBox1.Items.AddRange(columnNames);
+			}
 		}
 
 		private void InitializeDataSet(string tableName)
@@ -127,7 +131,7 @@ namespace WindowsFormsApp1
 
 		private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
 		{
-			if(isLoaded)
+			if (isLoaded)
 			{
 
 			}
@@ -160,21 +164,53 @@ namespace WindowsFormsApp1
 			}
 		}
 
-		//search dont work
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
-			try
+			string searchValue = textBox1.Text;
+			string searchRowName = comboBox1.Text;
+
+			if (dataGridView1 != null && dataGridView1?.DataSource != null)
 			{
-				if (dataGridView1?.DataSource != null)
+				if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
 				{
-					var tempTable = (DataSet)dataGridView1.DataSource;
-					tempTable.Tables[0].DefaultView.RowFilter = string.Format("" + comboBox1.Text + " like '%{0}%'", textBox1.Text.Trim().Replace("'", "''"));
-					dataGridView1.DataSource = tempTable;
+					dataGridView1.ClearSelection();
 				}
-			}
-			catch(Exception ex)
-			{
-				app.LogError(ex);
+				else
+				{
+					dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+					try
+					{
+						dataGridView1.ClearSelection();
+
+						bool valueResult = false;
+						foreach (DataGridViewRow row in dataGridView1.Rows)
+						{
+							for (int i = 0; i < row.Cells.Count; i++)
+							{
+								if (row.Cells[i].Value != null && (row.Cells[i].Value.ToString().ToUpper().Contains(searchValue.ToUpper())))
+								{
+									if (string.IsNullOrEmpty(searchRowName) || dataGridView1.Columns[row.Cells[i].ColumnIndex].HeaderText == searchRowName)
+									{
+										int rowIndex = row.Index;
+										dataGridView1.Rows[rowIndex].Selected = true;
+										valueResult = true;
+										break;
+									}
+								}
+							}
+						}
+
+						if (!valueResult)
+						{
+							dataGridView1.ClearSelection();
+							return;
+						}
+					}
+					catch (Exception exc)
+					{
+						MessageBox.Show(exc.Message);
+					}
+				}
 			}
 		}
 	}

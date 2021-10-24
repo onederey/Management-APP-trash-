@@ -46,7 +46,7 @@ namespace WindowsFormsApp1.Classes
 				connection.Open();
 				SqlDataAdapter da = new SqlDataAdapter();
 				SqlCommand cmd = connection.CreateCommand();
-				cmd.CommandText = SqlScripts.SelectScript + "[" + name + "]";
+				cmd.CommandText = SqlScripts.SelectScript + "[" + name.Split('.')[1] + "]";
 				da.SelectCommand = cmd;
 				da.Fill(ds);
 			}

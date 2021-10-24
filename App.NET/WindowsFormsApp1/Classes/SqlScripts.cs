@@ -10,7 +10,7 @@ namespace WindowsFormsApp1.Classes
 	{
 		public static string SelectScript = "SELECT * FROM ";
 
-		public static string SelectTables = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
+		public static string SelectTables = "SELECT [TABLE_SCHEMA] + '.' +[TABLE_NAME] as [TABLE_NAME] FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
 
 		#region SelectFK
 		public static string SelectFK = @"SELECT
