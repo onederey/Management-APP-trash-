@@ -92,7 +92,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="DBObjects\" />
     <Folder Include="Forms\" />
+    <Folder Include="Reports1\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

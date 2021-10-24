@@ -52,11 +52,7 @@ namespace WindowsFormsApp1
 		private TreeNode CreateNodesForTables(IList<string> items)
 		{
 			var node = new TreeNode() { Text = "Tables" };
-
-			//TODO: For this demo we're just going assign the key of the item to the node but you could store anything
 			node.Tag = 0;
-
-			//TODO: Going with the fast option so we'll create a dummy node
 			foreach (var item in items)
 			{
 				var child = new TreeNode() { Text = item };
@@ -155,6 +151,7 @@ namespace WindowsFormsApp1
 					try
 					{
 						SqlHelper.SaveAndCommitToDb((DataSet)dataGridView1.DataSource, currentTable);
+						app.LogSuccess("Save to DB");
 					}
 					catch (SqlException ex)
 					{

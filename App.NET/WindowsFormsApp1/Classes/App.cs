@@ -16,5 +16,10 @@ namespace WindowsFormsApp1.Classes
 								{ex.Message}
 								--Exception--");
 		}
+
+		public void LogSuccess(string action)
+		{
+			MessageBox.Show($"{action} - success!");
+		}
 	}
 }

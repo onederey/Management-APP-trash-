@@ -46,7 +46,7 @@ namespace WindowsFormsApp1.Classes
 				connection.Open();
 				SqlDataAdapter da = new SqlDataAdapter();
 				SqlCommand cmd = connection.CreateCommand();
-				cmd.CommandText = SqlScripts.SelectScript + "[" + name.Split('.')[1] + "]";
+				cmd.CommandText = SqlScripts.SelectScript + GetTableName(name);
 				da.SelectCommand = cmd;
 				da.Fill(ds);
 			}
@@ -62,7 +62,7 @@ namespace WindowsFormsApp1.Classes
 
 				DataSet newDataSet = new DataSet();
 				SqlDataAdapter newDataAdapter = new SqlDataAdapter();
-				newDataAdapter.SelectCommand = new SqlCommand(SqlScripts.SelectScript + $"[{currentTable}]", conn);
+				newDataAdapter.SelectCommand = new SqlCommand(SqlScripts.SelectScript + GetTableName(currentTable), conn);
 				SqlCommandBuilder cb = new SqlCommandBuilder(newDataAdapter);
 				newDataAdapter.Fill(newDataSet);
 
@@ -71,6 +71,20 @@ namespace WindowsFormsApp1.Classes
 				
 				conn.Close();
 			}
+		}
+
+		private static string GetTableName(string nameWithSchema)
+		{
+			var splittedString = nameWithSchema.Split('.');
+			StringBuilder builder = new StringBuilder();
+			builder.Append("[");
+			builder.Append(splittedString[0]);
+			builder.Append("].");
+			builder.Append("[");
+			builder.Append(splittedString[1]);
+			builder.Append("]");
+
+			return builder.ToString();
 		}
 	}
 }
