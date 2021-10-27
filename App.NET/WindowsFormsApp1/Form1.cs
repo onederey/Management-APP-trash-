@@ -160,55 +160,52 @@ namespace WindowsFormsApp1
 				}
 			}
 		}
+		
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            string searchValue = textBox1.Text;
+            string searchRowName = comboBox1.Text;
+            dataGridView1.CurrentCell = null;
+			
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                int rowIndex = row.Index;
+                dataGridView1.Rows[rowIndex].Visible = true;
+            }
 
-		private void textBox1_TextChanged(object sender, EventArgs e)
-		{
-			string searchValue = textBox1.Text;
-			string searchRowName = comboBox1.Text;
-
+            dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+			
 			if (dataGridView1 != null && dataGridView1?.DataSource != null)
-			{
-				if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
-				{
-					dataGridView1.ClearSelection();
-				}
-				else
-				{
-					dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-					try
-					{
-						dataGridView1.ClearSelection();
+            {
+                dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                try
+                {
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            if (dataGridView1.Columns[row.Cells[i].ColumnIndex].HeaderText == searchRowName)
+                            {
+                                if (row.Cells[i].Value == null || !(row.Cells[i].Value.ToString().ToUpper().StartsWith(searchValue.ToUpper())))
+                                {
+                                    int rowIndex = row.Index;
+                                    dataGridView1.Rows[rowIndex].Visible = false;
+                                    break;
+                                }
+                            }
+                        }
 
-						bool valueResult = false;
-						foreach (DataGridViewRow row in dataGridView1.Rows)
-						{
-							for (int i = 0; i < row.Cells.Count; i++)
-							{
-								if (row.Cells[i].Value != null && (row.Cells[i].Value.ToString().ToUpper().Contains(searchValue.ToUpper())))
-								{
-									if (string.IsNullOrEmpty(searchRowName) || dataGridView1.Columns[row.Cells[i].ColumnIndex].HeaderText == searchRowName)
-									{
-										int rowIndex = row.Index;
-										dataGridView1.Rows[rowIndex].Selected = true;
-										valueResult = true;
-										break;
-									}
-								}
-							}
-						}
+                        if (row.Index == dataGridView1.Rows.Count - 2)
+                            break;
+                    }
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
+            }
 
-						if (!valueResult)
-						{
-							dataGridView1.ClearSelection();
-							return;
-						}
-					}
-					catch (Exception exc)
-					{
-						MessageBox.Show(exc.Message);
-					}
-				}
-			}
-		}
-	}
+        }
+
+    }
 }
