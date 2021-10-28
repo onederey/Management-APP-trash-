@@ -81,10 +81,15 @@ namespace WindowsFormsApp1
 		private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             comboBox1.SelectedIndex = -1;
+            comboBox1.Text="Filter";
 			textBox1.Clear();
+            textBox1.Text = "Search...";
+
 			Console.Write(e.Node.Parent);
+
 			if (e.Node.Parent?.ToString() == "TreeNode: Tables")
-			{
+            {
+                
 				isLoaded = false;
 				currentTable = e.Node.Text;
 				InitializeDataSet(e.Node.Text);
@@ -111,6 +116,7 @@ namespace WindowsFormsApp1
 		{
 			dataset = SqlHelper.GetTableDataSet(tableName);
 
+            this.Text = tableName;
 			dataGridView1.DataSource = null;
 			dataGridView1.AutoGenerateColumns = true;
 			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -140,7 +146,7 @@ namespace WindowsFormsApp1
 		{
 			if (isLoaded)
 			{
-
+               
 			}
 		}
 
@@ -161,7 +167,17 @@ namespace WindowsFormsApp1
 						app.LogError(ex);
 					}
 				}
-			}
+
+                if (dataGridView1.CurrentRow?.Index != default)
+                {
+                    var temp = dataGridView1.CurrentRow.Index;
+                    InitializeDataSet(currentTable);
+                    dataGridView1.FirstDisplayedScrollingRowIndex = temp;
+                    dataGridView1.Rows[temp].Selected = true;
+				}
+                
+            }
+			
 		}
 		
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -174,12 +190,11 @@ namespace WindowsFormsApp1
                 int rowIndex = row.Index;
                 dataGridView1.Rows[rowIndex].Visible = true;
             }
-
-            dataGridView1.FirstDisplayedScrollingRowIndex = 0;
 			
 			if (dataGridView1 != null && dataGridView1?.DataSource != null)
             {
-                dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+				dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 try
                 {
                     foreach (DataGridViewRow row in dataGridView1.Rows)
@@ -196,7 +211,7 @@ namespace WindowsFormsApp1
                                 }
                             }
                         }
-
+						
                         if (row.Index == dataGridView1.Rows.Count - 2)
                             break;
                     }
@@ -208,6 +223,18 @@ namespace WindowsFormsApp1
             }
 
         }
-		
-	}
+
+        
+
+        private void textBox1_Click(object sender, EventArgs e)
+        {
+			if(textBox1.Text == "Search...")
+			    textBox1.Clear();
+        }
+
+        private void comboBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            comboBox1.Text = "";
+        }
+    }
 }
