@@ -79,7 +79,9 @@ namespace WindowsFormsApp1
 		}
 
 		private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-		{
+        {
+            comboBox1.SelectedIndex = -1;
+			textBox1.Clear();
 			Console.Write(e.Node.Parent);
 			if (e.Node.Parent?.ToString() == "TreeNode: Tables")
 			{
@@ -93,6 +95,7 @@ namespace WindowsFormsApp1
 
 		private void InitializeCombo()
 		{
+            dataGridView1.CurrentCell = null;
 			var ds = (DataSet)dataGridView1?.DataSource;
 			string[] columnNames = ds?.Tables[0]?.Columns.Cast<DataColumn>()
 								 .Select(x => x.ColumnName)
@@ -165,7 +168,6 @@ namespace WindowsFormsApp1
         {
             string searchValue = textBox1.Text;
             string searchRowName = comboBox1.Text;
-            dataGridView1.CurrentCell = null;
 			
             foreach (DataGridViewRow row in dataGridView1.Rows)
             {
@@ -206,6 +208,6 @@ namespace WindowsFormsApp1
             }
 
         }
-
-    }
+		
+	}
 }
