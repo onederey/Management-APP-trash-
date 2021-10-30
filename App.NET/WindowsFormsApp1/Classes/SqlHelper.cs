@@ -13,10 +13,10 @@ namespace WindowsFormsApp1.Classes
 	{
 		public static string connString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
 
-		public static IList<string> GetTables(string queryString, string connectionString)
+		public static IList<string> GetTables(string queryString)
 		{
 			var tables = new List<string>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connString))
             {
                 SqlCommand command = new SqlCommand(queryString, connection);
                 connection.Open();
@@ -25,6 +25,7 @@ namespace WindowsFormsApp1.Classes
 				{
 					while (reader.Read())
 					{
+						//if(!reader["TABLE_NAME"].ToString().Contains("Report"))
 						tables.Add(reader["TABLE_NAME"].ToString());
 					}
 				}
@@ -35,6 +36,54 @@ namespace WindowsFormsApp1.Classes
 			}
 
 			return tables;
+		}
+
+		public static IList<string> GetReports(string queryString)
+		{
+			var tables = new List<string>();
+			using (SqlConnection connection = new SqlConnection(connString))
+			{
+				SqlCommand command = new SqlCommand(queryString, connection);
+				connection.Open();
+				var reader = command.ExecuteReader();
+				try
+				{
+					while (reader.Read())
+					{
+						tables.Add(reader["ReportName"].ToString());
+					}
+				}
+				finally
+				{
+					reader.Close();
+				}
+			}
+
+			return tables;
+		}
+
+		public static string GetReportSP(string reportName)
+		{
+			string reportSP = default;
+			using (SqlConnection connection = new SqlConnection(connString))
+			{
+				SqlCommand command = new SqlCommand(SqlScripts.SelectReportSP + "'" + reportName + "'", connection);
+				connection.Open();
+				var reader = command.ExecuteReader();
+				try
+				{
+					while (reader.Read())
+					{
+						reportSP = reader["StoredProcedure"].ToString();
+					}
+				}
+				finally
+				{
+					reader.Close();
+				}
+			}
+
+			return reportSP;
 		}
 
 		public static DataSet GetTableDataSet(string name)

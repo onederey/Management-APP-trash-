@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsApp1.Classes;
+using WindowsFormsApp1.Forms;
 
 namespace WindowsFormsApp1
 {
@@ -35,13 +36,14 @@ namespace WindowsFormsApp1
 
 		private void InitializeTree()
 		{
-			var rootItems = SqlHelper.GetTables(SqlScripts.SelectTables, SqlHelper.connString);
+			var rootItems = SqlHelper.GetTables(SqlScripts.SelectTables);
+			var rootItemsForReports = SqlHelper.GetReports(SqlScripts.SelectReports);
 
 			try
 			{
 				treeView1.BeginUpdate();
 				treeView1.Nodes.Add(CreateNodesForTables(rootItems));
-				treeView1.Nodes.Add(CreateNodesForReports(rootItems));
+				treeView1.Nodes.Add(CreateNodesForReports(rootItemsForReports));
 			}
 			finally
 			{
@@ -69,11 +71,11 @@ namespace WindowsFormsApp1
 
 			node.Tag = 1;
 
-			//foreach (var item in items)
-			//{
-			//	var child = new TreeNode() { Text = item };
-			//	node.Nodes.Add(child);
-			//}
+			foreach (var item in items)
+			{
+				var child = new TreeNode() { Text = item };
+				node.Nodes.Add(child);
+			}
 
 			return node;
 		}
@@ -96,6 +98,13 @@ namespace WindowsFormsApp1
 			}
 			isLoaded = true;
 			InitializeCombo();
+
+			if (e.Node.Parent?.ToString() == "TreeNode: Reports")
+			{
+				Form reportForm = new ReportFor_m(e.Node.Text);
+				reportForm.TopMost = true;
+				reportForm.Show();
+			}
 		}
 
 		private void InitializeCombo()

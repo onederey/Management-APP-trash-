@@ -12,6 +12,10 @@ namespace WindowsFormsApp1.Classes
 
 		public static string SelectTables = "SELECT [TABLE_SCHEMA] + '.' +[TABLE_NAME] as [TABLE_NAME] FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
 
+		public static string SelectReports = "SELECT [ReportName] FROM [dbo].[Reports]";
+
+		public static string SelectReportSP = "SELECT TOP(1) [StoredProcedure] FROM [dbo].[Reports] WHERE [ReportName] =";
+
 		#region SelectFK
 		public static string SelectFK = @"SELECT
 											OBJECT_NAME(f.parent_object_id) TableName,
