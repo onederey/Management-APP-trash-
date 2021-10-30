@@ -57,6 +57,7 @@
     <Compile Include="Classes\Grids.cs" />
     <Compile Include="Classes\SqlHelper.cs" />
     <Compile Include="Classes\SqlScripts.cs" />
+    <Content Include="DBObjects\Tables\Country.sql" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,6 +66,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="DBObjects\DB.sql" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,7 +94,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DBObjects\" />
+    <Folder Include="DBObjects\StoredProcedures\" />
+    <Folder Include="DBObjects\Triggers\" />
     <Folder Include="Forms\" />
     <Folder Include="Reports1\" />
   </ItemGroup>
