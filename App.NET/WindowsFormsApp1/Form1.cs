@@ -79,10 +79,17 @@ namespace WindowsFormsApp1
 		}
 
 		private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-		{
+        {
+            comboBox1.SelectedIndex = -1;
+            comboBox1.Text="Filter";
+			textBox1.Clear();
+            textBox1.Text = "Search...";
+
 			Console.Write(e.Node.Parent);
+
 			if (e.Node.Parent?.ToString() == "TreeNode: Tables")
-			{
+            {
+                
 				isLoaded = false;
 				currentTable = e.Node.Text;
 				InitializeDataSet(e.Node.Text);
@@ -93,6 +100,7 @@ namespace WindowsFormsApp1
 
 		private void InitializeCombo()
 		{
+            dataGridView1.CurrentCell = null;
 			var ds = (DataSet)dataGridView1?.DataSource;
 			string[] columnNames = ds?.Tables[0]?.Columns.Cast<DataColumn>()
 								 .Select(x => x.ColumnName)
@@ -108,6 +116,7 @@ namespace WindowsFormsApp1
 		{
 			dataset = SqlHelper.GetTableDataSet(tableName);
 
+            this.Text = tableName;
 			dataGridView1.DataSource = null;
 			dataGridView1.AutoGenerateColumns = true;
 			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
@@ -137,7 +146,7 @@ namespace WindowsFormsApp1
 		{
 			if (isLoaded)
 			{
-
+               
 			}
 		}
 
@@ -158,57 +167,74 @@ namespace WindowsFormsApp1
 						app.LogError(ex);
 					}
 				}
-			}
+
+                if (dataGridView1.CurrentRow?.Index != default)
+                {
+                    var temp = dataGridView1.CurrentRow.Index;
+                    InitializeDataSet(currentTable);
+                    dataGridView1.FirstDisplayedScrollingRowIndex = temp;
+                    dataGridView1.Rows[temp].Selected = true;
+				}
+                
+            }
+			
 		}
-
-		private void textBox1_TextChanged(object sender, EventArgs e)
-		{
-			string searchValue = textBox1.Text;
-			string searchRowName = comboBox1.Text;
-
+		
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            string searchValue = textBox1.Text;
+            string searchRowName = comboBox1.Text;
+			
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                int rowIndex = row.Index;
+                dataGridView1.Rows[rowIndex].Visible = true;
+            }
+			
 			if (dataGridView1 != null && dataGridView1?.DataSource != null)
-			{
-				if (string.IsNullOrEmpty(searchValue) || string.IsNullOrWhiteSpace(searchValue))
-				{
-					dataGridView1.ClearSelection();
-				}
-				else
-				{
-					dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-					try
-					{
-						dataGridView1.ClearSelection();
+            {
+                dataGridView1.FirstDisplayedScrollingRowIndex = 0;
+				dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                try
+                {
+                    foreach (DataGridViewRow row in dataGridView1.Rows)
+                    {
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            if (dataGridView1.Columns[row.Cells[i].ColumnIndex].HeaderText == searchRowName)
+                            {
+                                if (row.Cells[i].Value == null || !(row.Cells[i].Value.ToString().ToUpper().StartsWith(searchValue.ToUpper())))
+                                {
+                                    int rowIndex = row.Index;
+                                    dataGridView1.Rows[rowIndex].Visible = false;
+                                    break;
+                                }
+                            }
+                        }
+						
+                        if (row.Index == dataGridView1.Rows.Count - 2)
+                            break;
+                    }
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
+            }
 
-						bool valueResult = false;
-						foreach (DataGridViewRow row in dataGridView1.Rows)
-						{
-							for (int i = 0; i < row.Cells.Count; i++)
-							{
-								if (row.Cells[i].Value != null && (row.Cells[i].Value.ToString().ToUpper().Contains(searchValue.ToUpper())))
-								{
-									if (string.IsNullOrEmpty(searchRowName) || dataGridView1.Columns[row.Cells[i].ColumnIndex].HeaderText == searchRowName)
-									{
-										int rowIndex = row.Index;
-										dataGridView1.Rows[rowIndex].Selected = true;
-										valueResult = true;
-										break;
-									}
-								}
-							}
-						}
+        }
 
-						if (!valueResult)
-						{
-							dataGridView1.ClearSelection();
-							return;
-						}
-					}
-					catch (Exception exc)
-					{
-						MessageBox.Show(exc.Message);
-					}
-				}
-			}
-		}
-	}
+        
+
+        private void textBox1_Click(object sender, EventArgs e)
+        {
+			if(textBox1.Text == "Search...")
+			    textBox1.Clear();
+        }
+
+        private void comboBox1_MouseClick(object sender, MouseEventArgs e)
+        {
+            comboBox1.Text = "";
+        }
+    }
 }
