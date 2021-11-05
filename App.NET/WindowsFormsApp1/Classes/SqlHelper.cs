@@ -105,7 +105,7 @@ namespace WindowsFormsApp1.Classes
 
 		public static void SaveAndCommitToDb(DataSet dataset, string currentTable)
 		{
-			using (SqlConnection conn = new SqlConnection(SqlHelper.connString))
+			using (SqlConnection conn = new SqlConnection(connString))
 			{
 				conn.Open();
 
@@ -120,6 +120,44 @@ namespace WindowsFormsApp1.Classes
 				
 				conn.Close();
 			}
+		}
+
+		public static DataSet GetSPParams(string spName)
+		{
+			DataSet ds = new DataSet();
+
+			using (SqlConnection connection = new SqlConnection(connString))
+			{
+				connection.Open();
+				SqlDataAdapter da = new SqlDataAdapter();
+				SqlCommand cmd = connection.CreateCommand();
+				cmd.CommandText = SqlScripts.SelectSPParams + spName.Split('.')[1] + "'";
+				da.SelectCommand = cmd;
+				da.Fill(ds);
+			}
+
+			return ds;
+		}
+
+		public static DataSet ExecSpWithParams(string spName, params SqlParameter[] sqlParameters)
+		{
+			DataSet ds = new DataSet();
+
+			using (SqlConnection connection = new SqlConnection(connString))
+			{
+				connection.Open();
+				SqlDataAdapter da = new SqlDataAdapter();
+				SqlCommand cmd = new SqlCommand(spName, connection);
+				cmd.CommandType = CommandType.StoredProcedure;
+
+				foreach (var param in sqlParameters)
+					cmd.Parameters.Add(param);
+
+				da.SelectCommand = cmd;
+				da.Fill(ds);
+			}
+
+			return ds;
 		}
 
 		private static string GetTableName(string nameWithSchema)

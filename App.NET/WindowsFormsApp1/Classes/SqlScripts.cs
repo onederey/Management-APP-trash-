@@ -31,7 +31,21 @@ namespace WindowsFormsApp1.Classes
 											OBJECT_NAME (f.referenced_object_id) = "; //need table name after = in ''
 		#endregion
 
-		public static string SelectScript3 = "SELECT * FROM ";
+		#region SelectSPParams
+		public static string SelectSPParams = @"SELECT
+													pa.parameter_id AS[order]
+													,pa.name AS[name]
+													,UPPER(t.name) AS[type]
+													,t.max_length AS[length]
+												FROM
+													sys.parameters AS pa
+												INNER JOIN
+													sys.procedures AS p on pa.object_id = p.object_id
+												INNER JOIN
+													sys.types AS t on pa.system_type_id = t.system_type_id AND pa.user_type_id = t.user_type_id
+												WHERE
+													p.name = '";
+		#endregion
 
 	}
 }

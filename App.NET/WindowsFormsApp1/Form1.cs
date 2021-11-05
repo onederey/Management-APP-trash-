@@ -102,7 +102,7 @@ namespace WindowsFormsApp1
 			if (e.Node.Parent?.ToString() == "TreeNode: Reports")
 			{
 				Form reportForm = new ReportFor_m(e.Node.Text);
-				reportForm.TopMost = true;
+				//reportForm.TopMost = true;
 				reportForm.Show();
 			}
 		}
