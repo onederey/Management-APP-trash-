@@ -23,7 +23,7 @@ BEGIN
 	FROM
 		[dbo].[Results] AS [r]
 		INNER JOIN [dbo].[Participants] AS [p] ON [r].[ParticipantID] = [p].[ParticipantID]
-		INNER JOIN [dbo].[KindsOfSport] AS [k] ON [r].[SportID] = [k].[KindID]
+		INNER JOIN [dbo].[KindsOfSport] AS [k] ON [p].[SportID] = [k].[KindID]
 		INNER JOIN [dbo].[Country] AS [c] ON [p].[CountryID] = [c].[ID]
 	WHERE
 		(@Country IS NULL OR [c].CountryName = @Country)

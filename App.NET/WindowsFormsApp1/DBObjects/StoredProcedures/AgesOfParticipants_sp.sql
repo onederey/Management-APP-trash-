@@ -18,10 +18,10 @@ BEGIN
 	SELECT
 		[p].[ParticipantID],
 		[p].[FirstName] + ' ' + [p].[LastName] AS [Name],
-		DATEDIFF(year, @Today, [p].[DateOfBirth]) AS [Years]
+		DATEDIFF(year, [p].[DateOfBirth], @Today) AS [Years]
 	FROM
 		[dbo].[Participants] as [p]
 	WHERE
-		(@MinAge IS NULL OR DATEDIFF(year, @Today, [p].[DateOfBirth]) > @MinAge)
-		AND (@MaxAge IS NULL OR DATEDIFF(year, @Today, [p].[DateOfBirth]) < @MaxAge)
+		(@MinAge IS NULL OR DATEDIFF(year, [p].[DateOfBirth], @Today) > @MinAge)
+		AND (@MaxAge IS NULL OR DATEDIFF(year, [p].[DateOfBirth], @Today) < @MaxAge)
 END

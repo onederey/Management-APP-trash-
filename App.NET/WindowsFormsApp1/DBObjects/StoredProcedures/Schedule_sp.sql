@@ -23,4 +23,5 @@ BEGIN
 		INNER JOIN [dbo].[Courts] AS [c] ON [c].[CourtID] = [s].[CourtID]
 	WHERE
 		CAST([s].[StartDateTime] AS DATE) = @CurrentDate
+		OR @CurrentDate IS NULL
 END

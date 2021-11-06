@@ -11,3 +11,15 @@ BEGIN
 	)
 END;
 GO
+
+INSERT INTO [dbo].[Country] (CountryName)
+VALUES
+	('Russia'),
+	('USA'),
+	('Japan'),
+	('China'),
+	('UK'),
+	('Germany'),
+	('Norway'),
+	('Sweden'),
+	('Finland')

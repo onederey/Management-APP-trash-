@@ -21,5 +21,10 @@ namespace WindowsFormsApp1.Classes
 		{
 			MessageBox.Show($"{action} - success!");
 		}
+
+		public void LogInfo(string info)
+		{
+			MessageBox.Show(info);
+		}
 	}
 }

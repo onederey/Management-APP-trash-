@@ -12,3 +12,11 @@ BEGIN
 	)
 END;
 GO
+
+INSERT INTO [dbo].[Courts] (Name, Location)
+VALUES
+	('Swimming Pool', 'Main Hall'),
+	('Tennis Court', 'North Hall'),
+	('Skate Park', 'North Hall'),
+	('Stadium', 'Main Hall'),
+	('Small Stadium', 'West Hall')

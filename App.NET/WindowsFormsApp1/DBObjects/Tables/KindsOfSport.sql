@@ -12,3 +12,12 @@ BEGIN
 	)
 END;
 GO
+
+INSERT INTO [dbo].[KindsOfSport] (Name, IsIndividual)
+VALUES
+	('Tennis', 1),
+	('Football', 0),
+	('Skate', 1),
+	('Swimming', 1),
+	('American Football', 0),
+	('Hockey', 0)

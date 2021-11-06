@@ -1,10 +1,16 @@
-﻿using System;
+﻿using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,6 +20,7 @@ namespace WindowsFormsApp1.Forms
 {
 	public partial class ReportFor_m : Form
 	{
+		private readonly App app = new App();
 		private string currentReport;
 		private int paramsCount = 0;
 
@@ -136,11 +143,12 @@ namespace WindowsFormsApp1.Forms
 					dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 					dataGridView1.DataSource = ds;
 					dataGridView1.DataMember = ds.Tables?[0].TableName;
+					dataGridView1.ReadOnly = true;
 				}
 			}
 			catch(Exception ex)
 			{
-				MessageBox.Show($"OK)( {ex.Message}");
+				app.LogError(ex);
 			}
 		}
 
@@ -170,7 +178,77 @@ namespace WindowsFormsApp1.Forms
 		/// <param name="e"></param>
 		private void exportButton_Click(object sender, EventArgs e)
 		{
+			if (dataGridView1.Rows.Count > 0)
+			{
+				SaveFileDialog sfd = new SaveFileDialog();
+				sfd.Filter = "PDF (*.pdf)|*.pdf";
+				sfd.FileName = $"{currentReport} - {DateTime.Now.ToShortDateString()}.pdf";
+				bool fileError = false;
+				if (sfd.ShowDialog() == DialogResult.OK)
+				{
+					if (File.Exists(sfd.FileName))
+					{
+						try
+						{
+							File.Delete(sfd.FileName);
+						}
+						catch (IOException ex)
+						{
+							fileError = true;
+							app.LogError(ex);
+						}
+					}
+					if (!fileError)
+					{
+						try
+						{
+							iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(new FileStream(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "../../Resources/logoImage.bmp"), FileMode.Open));
+							logo.SetAbsolutePosition((PageSize.A4.Width - logo.ScaledWidth), (PageSize.A4.Height - logo.ScaledHeight));
 
+							PdfPTable pdfTable = new PdfPTable(dataGridView1.Columns.Count);
+							pdfTable.DefaultCell.Padding = 3;
+							pdfTable.WidthPercentage = 100;
+							pdfTable.HorizontalAlignment = Element.ALIGN_LEFT;
+
+							foreach (DataGridViewColumn column in dataGridView1.Columns)
+							{
+								PdfPCell cell = new PdfPCell(new Phrase(column.HeaderText));
+								pdfTable.AddCell(cell);
+							}
+
+							foreach (DataGridViewRow row in dataGridView1.Rows)
+							{
+								foreach (DataGridViewCell cell in row.Cells)
+								{
+									pdfTable.AddCell(cell.Value.ToString());
+								}
+							}
+
+							using (FileStream stream = new FileStream(sfd.FileName, FileMode.Create))
+							{
+								Document pdfDoc = new Document(PageSize.A4, 10f, 20f, 20f, 10f);
+								PdfWriter.GetInstance(pdfDoc, stream);
+								pdfDoc.Open();
+								pdfDoc.Add(new Paragraph($"{currentReport} - report, generated {DateTime.Now}.\n\nAuto-reporting system.\n\n"));
+								pdfDoc.Add(pdfTable);
+								pdfDoc.Add(logo);
+								pdfDoc.Close();
+								stream.Close();
+							}
+
+							app.LogSuccess("Data Exported Successfully!");
+						}
+						catch (Exception ex)
+						{
+							app.LogError(ex);
+						}
+					}
+				}
+			}
+			else
+			{
+				app.LogInfo("No records to export!");
+			}
 		}
 	}
 }
