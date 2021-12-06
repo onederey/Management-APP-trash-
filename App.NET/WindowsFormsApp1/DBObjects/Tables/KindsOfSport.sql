@@ -21,3 +21,9 @@ VALUES
 	('Swimming', 1),
 	('American Football', 0),
 	('Hockey', 0)
+
+
+GO
+
+CREATE INDEX index_KindsOfSport_Name
+ON dbo.KindsOfSport([Name]);

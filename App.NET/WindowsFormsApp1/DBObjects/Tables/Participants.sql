@@ -32,3 +32,8 @@ VALUES
 	( 8, 1, 'Taylor', 'Swift', '', '03.04.2000'),
 	( 9, 2, 'Bri', 'Tales', '', '08.09.2000'),
 	( 1, 4, 'Kate', 'Karenina', '', '05.12.2000')
+
+GO
+
+CREATE INDEX index_Participants_FirstName
+ON dbo.Participants(FirstName);
