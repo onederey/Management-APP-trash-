@@ -61,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\App.cs" />
-    <Compile Include="Classes\Grids.cs" />
     <Compile Include="Classes\SqlHelper.cs" />
     <Compile Include="Classes\SqlScripts.cs" />
     <Content Include="DBObjects\Tables\Country.sql" />

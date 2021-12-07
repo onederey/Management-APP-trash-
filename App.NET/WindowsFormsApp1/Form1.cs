@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsApp1.Classes;
 using WindowsFormsApp1.Forms;
@@ -18,9 +14,7 @@ namespace WindowsFormsApp1
 		private App app = new App();
 
 		DataSet dataset = new DataSet();
-		DataSet newDataSet = new DataSet();
 		string currentTable;
-		bool isLoaded = false;
 
 		public Form1()
 		{
@@ -38,17 +32,32 @@ namespace WindowsFormsApp1
 		{
 			var rootItems = SqlHelper.GetTables(SqlScripts.SelectTables);
 			var rootItemsForReports = SqlHelper.GetReports(SqlScripts.SelectReports);
+			var rootItemsForViews = SqlHelper.GetViews(SqlScripts.SelectViews);
 
 			try
 			{
 				treeView1.BeginUpdate();
 				treeView1.Nodes.Add(CreateNodesForTables(rootItems));
 				treeView1.Nodes.Add(CreateNodesForReports(rootItemsForReports));
+				treeView1.Nodes.Add(CreateNodesForViews(rootItemsForViews));
 			}
 			finally
 			{
 				treeView1.EndUpdate();
 			};
+		}
+
+		private TreeNode CreateNodesForViews(IList<string> items)
+		{
+			var node = new TreeNode() { Text = "Views" };
+			node.Tag = 0;
+			foreach (var item in items)
+			{
+				var child = new TreeNode() { Text = item };
+				node.Nodes.Add(child);
+			}
+
+			return node;
 		}
 
 		private TreeNode CreateNodesForTables(IList<string> items)
@@ -64,7 +73,6 @@ namespace WindowsFormsApp1
 			return node;
 		}
 
-		//rework for reports
 		private TreeNode CreateNodesForReports(IList<string> items)
 		{
 			var node = new TreeNode() { Text = "Reports" };
@@ -87,16 +95,11 @@ namespace WindowsFormsApp1
 			textBox1.Clear();
             textBox1.Text = "Search...";
 
-			Console.Write(e.Node.Parent);
-
-			if (e.Node.Parent?.ToString() == "TreeNode: Tables")
+			if (e.Node.Parent?.ToString() == "TreeNode: Tables" || e.Node.Parent?.ToString() == "TreeNode: Views")
             {
-                
-				isLoaded = false;
 				currentTable = e.Node.Text;
-				InitializeDataSet(e.Node.Text);
+				InitializeDataSet(e.Node.Text, e.Node.Parent?.ToString() == "TreeNode: Tables" ? false : true);
 			}
-			isLoaded = true;
 			InitializeCombo();
 
 			if (e.Node.Parent?.ToString() == "TreeNode: Reports")
@@ -121,7 +124,7 @@ namespace WindowsFormsApp1
 			}
 		}
 
-		private void InitializeDataSet(string tableName)
+		private void InitializeDataSet(string tableName, bool isView = false)
 		{
 			dataset = SqlHelper.GetTableDataSet(tableName);
 
@@ -131,32 +134,7 @@ namespace WindowsFormsApp1
 			dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 			dataGridView1.DataSource = dataset;
 			dataGridView1.DataMember = dataset.Tables[0].TableName;
-		}
-
-		private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-		{
-
-		}
-
-		private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
-		{
-
-		}
-
-		private void dataGridView1_RowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
-		{
-			if (isLoaded)
-			{
-
-			}
-		}
-
-		private void dataGridView1_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
-		{
-			if (isLoaded)
-			{
-               
-			}
+			dataGridView1.ReadOnly = isView;
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -188,7 +166,7 @@ namespace WindowsFormsApp1
             }
 			
 		}
-		
+
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             string searchValue = textBox1.Text;
@@ -231,9 +209,7 @@ namespace WindowsFormsApp1
                 }
             }
 
-        }
-
-        
+        }   
 
         private void textBox1_Click(object sender, EventArgs e)
         {

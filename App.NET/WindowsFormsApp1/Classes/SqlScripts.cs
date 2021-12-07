@@ -16,6 +16,8 @@ namespace WindowsFormsApp1.Classes
 
 		public static string SelectReportSP = "SELECT TOP(1) [StoredProcedure] FROM [dbo].[Reports] WHERE [ReportName] =";
 
+		public static string SelectViews = "SELECT CONCAT(OBJECT_SCHEMA_NAME([v].[object_id]), '.', [v].[name]) as [Name] FROM sys.views as [v]";
+
 		#region SelectFK
 		public static string SelectFK = @"SELECT
 											OBJECT_NAME(f.parent_object_id) TableName,

@@ -2,17 +2,10 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WindowsFormsApp1.Classes;
 
@@ -36,9 +29,6 @@ namespace WindowsFormsApp1.Forms
 
 		private void HideParamsBoxes()
 		{
-			//panel1.Visible = false;
-			label1.Visible = false;
-
 			textBoxParam1.Visible = false;
 			textBoxParam2.Visible = false;
 			textBoxParam3.Visible = false;
@@ -93,10 +83,8 @@ namespace WindowsFormsApp1.Forms
 			}
 		}
 
-		//shit
 		private string GetReportSP() => SqlHelper.GetReportSP(currentReport);
 
-		//guess same shit
 		private DataSet GetReportParams() => SqlHelper.GetSPParams(GetReportSP());
 
 		/// <summary>

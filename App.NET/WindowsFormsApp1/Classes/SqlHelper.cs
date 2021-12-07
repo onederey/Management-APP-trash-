@@ -62,6 +62,30 @@ namespace WindowsFormsApp1.Classes
 			return tables;
 		}
 
+		public static IList<string> GetViews(string queryString)
+		{
+			var tables = new List<string>();
+			using (SqlConnection connection = new SqlConnection(connString))
+			{
+				SqlCommand command = new SqlCommand(queryString, connection);
+				connection.Open();
+				var reader = command.ExecuteReader();
+				try
+				{
+					while (reader.Read())
+					{
+						tables.Add(reader["Name"].ToString());
+					}
+				}
+				finally
+				{
+					reader.Close();
+				}
+			}
+
+			return tables;
+		}
+
 		public static string GetReportSP(string reportName)
 		{
 			string reportSP = default;
