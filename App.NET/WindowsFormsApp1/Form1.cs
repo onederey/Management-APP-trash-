@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using WindowsFormsApp1.Classes;
 using WindowsFormsApp1.Forms;
@@ -24,8 +25,22 @@ namespace WindowsFormsApp1
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
-
+			FillStatusStrip();
 			InitializeTree();
+		}
+
+		private void FillStatusStrip()
+		{
+			var split = SqlHelper.connString.Split(';');
+			var builder = new StringBuilder();
+			builder.Append(split[0].EndsWith(".") ? split[0].Replace(".", "local") : split[0]);
+			builder.Append(", ");
+			builder.Append(split[1]);
+			builder.Append(", ");
+			builder.Append(split[2]);
+			builder.Append(", ");
+			builder.Append(DateTime.Today.ToShortDateString());
+			toolStripStatusLabel1.Text = builder.ToString();
 		}
 
 		private void InitializeTree()
