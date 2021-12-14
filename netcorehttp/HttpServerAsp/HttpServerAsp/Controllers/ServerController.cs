@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using HttpServerAsp.Classes;
 using HttpServerAsp.Interfaces;
@@ -81,6 +79,40 @@ namespace HttpServerAsp.Controllers
             catch (Exception ex)
             {
                 return Ok(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("getinputdata")]
+        public IActionResult GetInput()
+        {
+            try
+            {
+                var response = _serializer.SerializeJson(_input);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("writeanswer")]
+        public async Task<IActionResult> WriteAnswer()
+        {
+            using var streamReader = new StreamReader(Request.Body);
+            var body = await streamReader.ReadToEndAsync();
+
+            try
+            {
+                var output = _serializer.DeserializeJson<Output>(body);
+
+                return Ok(output.IsEqual(_output));
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message + " " + body);
             }
         }
     }
